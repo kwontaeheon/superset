@@ -14,7 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-x-superset-image: &superset-image apache/superset:latest-dev
+#x-superset-image: &superset-image apache/superset:latest-dev
+#
+x-superset-image: &superset-image apache/superset:5b79f84e1ba2feab10bc9b96fd786d82418b7b4a
 x-superset-depends-on: &superset-depends-on
   - db
   - redis
@@ -29,7 +31,7 @@ x-superset-volumes: &superset-volumes
 version: "3.7"
 services:
   redis:
-    image: redis:latest
+    image: redis:6.2.1
     container_name: superset_cache
     restart: unless-stopped
     ports:
@@ -99,6 +101,14 @@ services:
     depends_on: *superset-depends-on
     user: "root"
     volumes: *superset-volumes
+
+  spark-thrift:
+    image: spark-thrift:v2.1.1
+    container_name: spark-thrift
+    restart: unless-stopped
+    depends_on: *superset-depends-on
+    ports:
+      - 10000:10000
 
   superset-tests-worker:
     image: *superset-image

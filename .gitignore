@@ -84,6 +84,8 @@ testCSV.csv
 .terser-plugin-cache/
 apache-superset-*.tar.gz*
 release.json
+*.tar.gz
+*.tar
 
 # Translation binaries
 messages.mo

@@ -1079,6 +1079,7 @@ class Superset(BaseSupersetView):  # pylint: disable=too-many-public-methods
             tables = [tn for tn in tables if tn.schema in valid_schemas]
             views = [vn for vn in views if vn.schema in valid_schemas]
 
+        
         max_items = config["MAX_TABLE_NAMES"] or len(tables)
         total_items = len(tables) + len(views)
         max_tables = len(tables)
@@ -1088,6 +1089,7 @@ class Superset(BaseSupersetView):  # pylint: disable=too-many-public-methods
             max_views = max_items * len(views) // total_items
 
         dataset_tables = {table.name: table for table in database.tables}
+        logger.warning(dataset_tables, tables, views)
 
         table_options = [
             {

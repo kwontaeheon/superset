@@ -502,9 +502,19 @@ class Database(
         :return: list of tables
         """
         try:
+            # For Hive connectivity
+            if self.db_engine_spec == db_engine_specs.hive.HiveEngineSpec:
+                engine =  self.get_sqla_engine()
+                if schema:
+                    rs = engine.execute('show tables in %s' % schema).fetchall()
+                else:
+                    rs = engine.execute('show tables').fetchall()
+                return  [utils.DatasourceName(table=x[1], schema=x[0]) for x in rs] 
+
             tables = self.db_engine_spec.get_table_names(
                 database=self, inspector=self.inspector, schema=schema
             )
+
             return [
                 utils.DatasourceName(table=table, schema=schema) for table in tables
             ]
@@ -534,9 +544,6 @@ class Database(
         :return: list of views
         """
         try:
-            views = self.db_engine_spec.get_view_names(
-                database=self, inspector=self.inspector, schema=schema
-            )
             return [utils.DatasourceName(table=view, schema=schema) for view in views]
         except Exception as ex:  # pylint: disable=broad-except
             logger.warning(ex)
